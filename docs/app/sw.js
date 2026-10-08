@@ -1,5 +1,6 @@
-// Primero internet (para recibir siempre la versión nueva); sin internet, la última copia guardada.
-const CACHE = "mi-tienda-venta-v1";
+// Abre al instante con la copia guardada y la actualiza en segundo plano.
+// Si no hay copia (primera vez), la descarga de internet.
+const CACHE = "mi-tienda-venta-v2";
 const ASSETS = ["./", "./config.js", "./app.enc", "./manifest.json", "./icon.svg", "./icon-192.png", "./icon-512.png", "./icon-maskable-192.png", "./icon-maskable-512.png"];
 
 async function limpia(res) {
@@ -29,16 +30,17 @@ self.addEventListener("fetch", (event) => {
   if (req.method !== "GET" || new URL(req.url).origin !== location.origin) return;
   // Todas las páginas de la app comparten la misma copia ("./"), sin importar el #código.
   const clave = req.mode === "navigate" ? "./" : req;
+  const deRed = fetch(req, { cache: "no-cache" })
+    .then(limpia)
+    .then((res) => {
+      if (res.ok) {
+        const copia = res.clone();
+        caches.open(CACHE).then((cache) => cache.put(clave, copia));
+      }
+      return res;
+    });
+  event.waitUntil(deRed.catch(() => {}));
   event.respondWith(
-    fetch(req, { cache: "no-cache" })
-      .then(limpia)
-      .then((res) => {
-        if (res.ok) {
-          const copia = res.clone();
-          caches.open(CACHE).then((cache) => cache.put(clave, copia));
-        }
-        return res;
-      })
-      .catch(() => caches.match(clave, { ignoreSearch: true }))
+    caches.match(clave, { ignoreSearch: true }).then((guardada) => guardada || deRed)
   );
 });

@@ -31,7 +31,8 @@ Si cambias index.html de la app
 -------------------------------
     npm run preparar
 Luego sube los cambios a GitHub (git add -A, git commit, git push).
-Los celulares se actualizan solos al abrir la app con internet.
+Los celulares reciben la versión nueva solos: la descargan en segundo plano
+al abrir la app con internet y la usan desde la siguiente vez que la abren.
 
 MUY IMPORTANTE
 --------------
