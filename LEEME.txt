@@ -1,0 +1,42 @@
+MI TIENDA — Versión para vender (GitHub Pages)
+==============================================
+
+Cómo funciona
+-------------
+- La app se publica gratis en GitHub Pages, pero va CIFRADA (docs/app.enc).
+  Sin un código de activación válido no se puede abrir.
+- Tú cobras (transferencia, Mercado Pago, efectivo) y generas el código en tu laptop.
+- El código lleva el nombre del cliente y la fecha de vencimiento. Al vencer, la app
+  se bloquea sola; sus datos NO se borran y vuelven al renovar.
+- Los datos de cada cliente viven solo en su celular.
+
+Generar o renovar códigos (en tu laptop)
+----------------------------------------
+    npm run generador
+Se abre http://localhost:8090. Ahí:
+- "Nuevo cliente": nombre, WhatsApp y meses pagados -> Generar código -> Enviar por WhatsApp.
+- "+1 mes" / "+3": cuando te pague la renovación. Se le manda un código nuevo
+  (el cliente solo abre el enlace y listo).
+- La lista de clientes se guarda en clientes.json.
+
+Si cambias index.html de la app
+-------------------------------
+    npm run preparar
+Luego sube los cambios a GitHub (git add -A, git commit, git push).
+Los celulares se actualizan solos al abrir la app con internet.
+
+MUY IMPORTANTE
+--------------
+- .secretos.json es la llave de tu negocio. Guarda una copia (USB o Drive privado).
+  Si la pierdes, no podrás generar códigos y tendrás que crear llaves nuevas
+  (npm run llaves) y mandar códigos nuevos a todos tus clientes.
+- NUNCA subas .secretos.json ni clientes.json a GitHub (ya están en .gitignore).
+- No hay límite técnico de celulares por código: si un cliente comparte su enlace,
+  la otra persona verá "Licencia de <nombre del cliente>" en la app.
+
+Configuración (config.json)
+---------------------------
+- url: dirección de tu app en GitHub Pages.
+- contactoWA: tu WhatsApp con lada (ej. 525512345678). Aparece en la pantalla de
+  "Activa tu app" y "Tu suscripción venció". Después de cambiarlo: npm run preparar.
+- nombreVendedor: nombre que aparece en los mensajes.

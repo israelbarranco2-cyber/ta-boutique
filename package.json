@@ -1,0 +1,12 @@
+{
+  "name": "mi-tienda-venta",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "llaves": "node crear-llaves.mjs",
+    "preparar": "node preparar.mjs",
+    "generador": "node generador.mjs",
+    "probar": "node preparar.mjs && npx --yes serve docs -p 8081"
+  }
+}

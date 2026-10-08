@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="es-MX">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Códigos de Mi Tienda</title>
+<style>
+:root{ --pet:#156082; --pet-d:#0e4560; --pet-l:#e6f0f5; --ver:#00A651; --ama-l:#fff6d9; --rojo:#d93636; --rojo-l:#fdeaea; --gris:#6b7785; --tx:#1d2733; --bg:#f2f6f9; --borde:#dfe7ee; }
+*{box-sizing:border-box}
+body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--tx)}
+header{background:linear-gradient(135deg,var(--pet),var(--pet-d));color:#fff;padding:16px 20px;font-size:19px;font-weight:700}
+main{max-width:820px;margin:0 auto;padding:18px 16px 40px}
+.card{background:#fff;border-radius:16px;box-shadow:0 6px 20px rgba(21,96,130,.10);padding:18px;margin-bottom:16px}
+h2{font-size:17px;margin:0 0 12px;color:var(--pet-d)}
+.fila{display:grid;grid-template-columns:2fr 1.4fr 1fr auto;gap:10px;align-items:end}
+@media (max-width:640px){ .fila{grid-template-columns:1fr 1fr} }
+label{display:block;font-size:13px;font-weight:600;color:var(--gris);margin-bottom:4px}
+input,select{width:100%;font:inherit;padding:10px;border:1.5px solid var(--borde);border-radius:10px}
+button,.btn{border:0;border-radius:10px;padding:10px 14px;font:inherit;font-weight:700;color:#fff;background:var(--pet);cursor:pointer;text-decoration:none;display:inline-block;white-space:nowrap}
+.verde{background:var(--ver)} .wa{background:#25D366} .claro{background:var(--pet-l);color:var(--pet-d)} .rojo{background:var(--rojo-l);color:var(--rojo)}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th,td{text-align:left;padding:10px 8px;border-bottom:1px solid var(--borde);vertical-align:middle}
+th{color:var(--gris);font-size:12px;text-transform:uppercase;letter-spacing:.04em}
+td .acc{display:flex;gap:6px;flex-wrap:wrap}
+td .acc button{padding:7px 10px;font-size:13px}
+.estado{font-weight:700;border-radius:999px;padding:3px 9px;font-size:12px}
+.ok{background:#e3f6ec;color:#00753a} .pronto{background:var(--ama-l);color:#7a5a00} .vencido{background:var(--rojo-l);color:var(--rojo)}
+.resultado{background:var(--pet-l);border-radius:12px;padding:14px;margin-top:14px}
+.resultado textarea{width:100%;min-height:120px;font:13px/1.4 ui-monospace,Consolas,monospace;border:1px solid var(--borde);border-radius:8px;padding:8px;margin:8px 0}
+.aviso{background:var(--ama-l);border-radius:12px;padding:10px 12px;font-size:14px;margin-bottom:16px}
+.vacio{color:var(--gris);text-align:center;padding:20px}
+.oculto{display:none}
+</style>
+</head>
+<body>
+<header>🔑 Códigos de Mi Tienda</header>
+<main>
+  <div class="aviso" id="avisoUrl"></div>
+
+  <div class="card">
+    <h2>Nuevo cliente</h2>
+    <div class="fila">
+      <div><label for="nCliente">Nombre del cliente</label><input id="nCliente" placeholder="Ej. Ana López"></div>
+      <div><label for="nTel">WhatsApp</label><input id="nTel" inputmode="tel" placeholder="10 dígitos"></div>
+      <div><label for="nMeses">Meses pagados</label><select id="nMeses"><option>1</option><option>2</option><option>3</option><option>6</option><option>12</option></select></div>
+      <button class="verde" id="nCrear">Generar código</button>
+    </div>
+    <div id="resultado" class="resultado oculto">
+      <b id="rTitulo"></b>
+      <textarea id="rMensaje" readonly></textarea>
+      <a class="btn wa" id="rWA" target="_blank" rel="noopener">💬 Enviar por WhatsApp</a>
+      <button class="claro" id="rCopiar">📋 Copiar mensaje</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Mis clientes</h2>
+    <div style="overflow-x:auto"><table>
+      <thead><tr><th>Cliente</th><th>Vence</th><th>Estado</th><th>Renovar / acciones</th></tr></thead>
+      <tbody id="lista"></tbody>
+    </table></div>
+  </div>
+</main>
+<script>
+const $ = (id) => document.getElementById(id);
+const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
+const fecha = (iso) => iso.split("-").reverse().join("/");
+let clientes = [];
+
+async function api(datos) {
+  const r = await fetch("/api/accion", { method: "POST", body: JSON.stringify(datos) });
+  const j = await r.json();
+  if (!r.ok) throw new Error(j.error || "Error");
+  return j;
+}
+
+function estado(c) {
+  const dias = Math.ceil((new Date(c.vence + "T23:59:59") - Date.now()) / 864e5);
+  if (dias < 0) return `<span class="estado vencido">Vencido</span>`;
+  if (dias <= 5) return `<span class="estado pronto">Vence en ${dias} día${dias === 1 ? "" : "s"}</span>`;
+  return `<span class="estado ok">Activo</span>`;
+}
+
+async function cargar() {
+  const r = await (await fetch("/api/clientes")).json();
+  clientes = r.clientes.sort((a, b) => a.vence.localeCompare(b.vence));
+  $("avisoUrl").innerHTML = `Los enlaces apuntan a <b>${esc(r.config.url)}</b>. Si tu app está en otra dirección, cámbiala en <code>config.json</code>.`;
+  $("lista").innerHTML = clientes.length ? clientes.map((c) => `<tr>
+      <td><b>${esc(c.cliente)}</b><br><small style="color:var(--gris)">${esc(c.tel || "sin WhatsApp")}</small></td>
+      <td>${fecha(c.vence)}</td>
+      <td>${estado(c)}</td>
+      <td><div class="acc">
+        <button class="verde" data-a="renovar" data-m="1" data-id="${c.id}">+1 mes</button>
+        <button class="claro" data-a="renovar" data-m="3" data-id="${c.id}">+3</button>
+        <button class="claro" data-a="reenviar" data-id="${c.id}">Reenviar</button>
+        <button class="rojo" data-a="borrar" data-id="${c.id}">Borrar</button>
+      </div></td></tr>`).join("") : `<tr><td colspan="4" class="vacio">Aún no tienes clientes.</td></tr>`;
+}
+
+function mostrar(r, titulo) {
+  $("resultado").classList.remove("oculto");
+  $("rTitulo").textContent = titulo + " — válido hasta el " + fecha(r.vence);
+  $("rMensaje").value = r.mensaje;
+  $("rWA").href = "https://wa.me/" + (r.tel ? (r.tel.length === 10 ? "52" + r.tel : r.tel) : "") + "?text=" + encodeURIComponent(r.mensaje);
+  $("resultado").scrollIntoView({ behavior: "smooth", block: "center" });
+}
+
+$("nCrear").onclick = async () => {
+  try {
+    const r = await api({ accion: "nuevo", cliente: $("nCliente").value, tel: $("nTel").value, meses: $("nMeses").value });
+    $("nCliente").value = ""; $("nTel").value = "";
+    mostrar(r, "Código de " + r.cliente);
+    cargar();
+  } catch (e) { alert(e.message); }
+};
+
+$("lista").onclick = async (e) => {
+  const b = e.target.closest("button"); if (!b) return;
+  const c = clientes.find((x) => x.id === b.dataset.id);
+  try {
+    if (b.dataset.a === "borrar") {
+      if (!confirm(`¿Borrar a ${c.cliente} de tu lista? Su código seguirá funcionando hasta que venza.`)) return;
+      await api({ accion: "borrar", id: c.id }); $("resultado").classList.add("oculto");
+    } else if (b.dataset.a === "renovar") {
+      if (!confirm(`¿Renovar ${b.dataset.m} mes(es) a ${c.cliente}? Confirma que ya te pagó.`)) return;
+      mostrar(await api({ accion: "renovar", id: c.id, meses: b.dataset.m }), "Renovación de " + c.cliente);
+    } else {
+      mostrar(await api({ accion: "reenviar", id: c.id }), "Código de " + c.cliente);
+    }
+    cargar();
+  } catch (err) { alert(err.message); }
+};
+
+$("rCopiar").onclick = async () => { await navigator.clipboard.writeText($("rMensaje").value); $("rCopiar").textContent = "✅ Copiado"; setTimeout(() => ($("rCopiar").textContent = "📋 Copiar mensaje"), 1500); };
+
+cargar();
+</script>
+</body>
+</html>
