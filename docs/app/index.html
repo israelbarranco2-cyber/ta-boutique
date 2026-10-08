@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="es-MX">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#156082">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Mi Tienda">
+<title>Mi Tienda</title>
+<link rel="icon" href="icon.svg">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="manifest" href="manifest.json">
+<style>
+:root{ --pet:#156082; --pet-d:#0e4560; --pet-l:#e6f0f5; --ver:#00A651; --ama:#FFC000; --rojo:#d93636; --rojo-l:#fdeaea; --gris:#6b7785; --tx:#1d2733; --bg:#f2f6f9; }
+*{box-sizing:border-box}
+html,body{margin:0}
+body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--tx);min-height:100vh;display:flex;flex-direction:column}
+header{background:linear-gradient(135deg,var(--pet),var(--pet-d));color:#fff;padding:calc(14px + env(safe-area-inset-top)) 16px 14px;display:flex;align-items:center;gap:10px}
+header img{width:38px;height:38px;border-radius:10px}
+header b{font-size:19px}
+main{flex:1;width:100%;max-width:460px;margin:0 auto;padding:22px 16px}
+.card{background:#fff;border-radius:18px;box-shadow:0 6px 20px rgba(21,96,130,.10);padding:20px}
+h1{font-size:22px;color:var(--pet-d);margin:0 0 8px}
+p{line-height:1.45;margin:0 0 12px}
+.nota{color:var(--gris);font-size:14px}
+textarea{width:100%;min-height:96px;font:inherit;font-size:14px;padding:12px;border:1.5px solid #dfe7ee;border-radius:12px;resize:vertical;word-break:break-all}
+textarea:focus{outline:none;border-color:var(--pet)}
+.btn{display:flex;align-items:center;justify-content:center;width:100%;border:0;border-radius:14px;padding:14px;font:inherit;font-weight:700;font-size:16px;min-height:50px;margin-top:12px;color:#fff;background:var(--pet);cursor:pointer;text-decoration:none}
+.btn.wa{background:#25D366}
+.error{background:var(--rojo-l);color:var(--rojo);border-radius:12px;padding:10px 12px;font-size:14px;margin-top:12px}
+.oculto{display:none}
+.cargando{text-align:center;color:var(--gris);padding-top:40px}
+</style>
+</head>
+<body>
+<header><img src="icon.svg" alt=""><b>Mi Tienda</b></header>
+<main>
+  <div id="cargando" class="cargando">Abriendo…</div>
+
+  <div id="pantalla" class="card oculto">
+    <h1 id="titulo">Activa tu app</h1>
+    <p id="mensaje">Para usar Mi Tienda necesitas un código de activación. Si ya lo compraste, ábrelo desde el enlace que te mandaron o pégalo aquí.</p>
+    <textarea id="codigo" placeholder="Pega aquí tu código de activación" autocomplete="off" spellcheck="false"></textarea>
+    <button class="btn" id="activar">Activar</button>
+    <div id="error" class="error oculto"></div>
+    <a id="contacto" class="btn wa oculto" target="_blank" rel="noopener">💬 Comprar o renovar por WhatsApp</a>
+    <p class="nota" style="margin-top:14px">Tus datos se guardan solo en este celular. Si tu suscripción vence, no se borran: vuelven a aparecer al renovar.</p>
+  </div>
+</main>
+
+<script src="config.js"></script>
+<script>
+(function () {
+  "use strict";
+  var L = window.LICENCIA || {};
+  var $ = function (id) { return document.getElementById(id); };
+  var guardado = function (k, v) { try { if (v === undefined) return localStorage.getItem("lic_" + k); localStorage.setItem("lic_" + k, v); } catch (e) { return null; } };
+  var b64 = function (s) { s = s.replace(/-/g, "+").replace(/_/g, "/"); while (s.length % 4) s += "="; return Uint8Array.from(atob(s), function (c) { return c.charCodeAt(0); }); };
+  var fecha = function (iso) { return iso.split("-").reverse().join("/"); };
+
+  // Hora "más reciente vista": evita que atrasar el reloj del celular extienda la suscripción.
+  function ahora() {
+    var n = Date.now(), max = Number(guardado("visto")) || 0;
+    if (n > max) { guardado("visto", String(n)); max = n; }
+    return max;
+  }
+
+  async function leerCodigo(codigo) {
+    codigo = (codigo || "").replace(/\s+/g, "");
+    var partes = codigo.split(".");
+    if (partes.length !== 2) throw new Error("formato");
+    var llave = await crypto.subtle.importKey("jwk", L.llave, { name: "ECDSA", namedCurve: "P-256" }, false, ["verify"]);
+    var ok = await crypto.subtle.verify({ name: "ECDSA", hash: "SHA-256" }, llave, b64(partes[1]), new TextEncoder().encode(partes[0]));
+    if (!ok) throw new Error("firma");
+    var datos = JSON.parse(new TextDecoder().decode(b64(partes[0])));
+    datos.codigo = codigo;
+    datos.vencido = ahora() > new Date(datos.v + "T23:59:59").getTime();
+    return datos;
+  }
+
+  async function abrirApp(lic) {
+    var res = await fetch("app.enc");
+    if (!res.ok) throw new Error("No se pudo descargar la app (" + res.status + ")");
+    var bytes = new Uint8Array(await res.arrayBuffer());
+    var llave = await crypto.subtle.importKey("raw", b64(lic.k), "AES-GCM", false, ["decrypt"]);
+    var html = new TextDecoder().decode(await crypto.subtle.decrypt({ name: "AES-GCM", iv: bytes.slice(0, 12) }, llave, bytes.slice(12)));
+    document.open(); document.write(html); document.close();
+    marcarLicencia(lic);
+  }
+
+  // Línea discreta bajo el encabezado de la app con el nombre del cliente y el vencimiento.
+  function marcarLicencia(lic) {
+    var poner = function () {
+      var h = document.querySelector("header.top");
+      if (!h) return setTimeout(poner, 50);
+      var faltan = Math.ceil((new Date(lic.v + "T23:59:59") - Date.now()) / 864e5);
+      var d = document.createElement("div");
+      d.textContent = "Licencia de " + lic.n + " · vence " + fecha(lic.v) + (faltan <= 5 ? " (faltan " + faltan + " día" + (faltan === 1 ? "" : "s") + ", pide tu renovación)" : "");
+      d.style.cssText = "font:12px system-ui,sans-serif;text-align:center;padding:5px 10px;" + (faltan <= 5 ? "background:#fff6d9;color:#7a5a00" : "background:#e6f0f5;color:#0e4560");
+      h.insertAdjacentElement("afterend", d);
+    };
+    poner();
+  }
+
+  function mostrar(titulo, mensaje, error) {
+    $("cargando").classList.add("oculto");
+    $("pantalla").classList.remove("oculto");
+    $("titulo").textContent = titulo;
+    $("mensaje").textContent = mensaje;
+    $("error").textContent = error || "";
+    $("error").classList.toggle("oculto", !error);
+    if (L.contactoWA) {
+      var a = $("contacto");
+      a.href = "https://wa.me/" + L.contactoWA.replace(/\D/g, "") + "?text=" + encodeURIComponent("Hola, quiero comprar o renovar mi código de " + (L.nombre || "Mi Tienda") + ".");
+      a.classList.remove("oculto");
+    }
+  }
+
+  function textoError(e) {
+    if (e.message === "formato" || e.message === "firma") return "Ese código no es válido. Revisa que lo hayas copiado completo.";
+    if (e.name === "OperationError") return "No se pudo abrir la app con este código. Pide uno nuevo.";
+    return "No se pudo abrir la app: " + (e.message || e);
+  }
+
+  async function intentar(codigo, desdeUsuario) {
+    var lic;
+    try { lic = await leerCodigo(codigo); }
+    catch (e) { return mostrar("Activa tu app", "Pega tu código de activación.", textoError(e)); }
+    if (lic.vencido) {
+      if (desdeUsuario) guardado("codigo", lic.codigo);
+      return mostrar("Tu suscripción venció", "La licencia de " + lic.n + " venció el " + fecha(lic.v) + ". Pide tu código de renovación y pégalo aquí. Tus datos siguen guardados.", desdeUsuario ? "Este código ya venció el " + fecha(lic.v) + "." : "");
+    }
+    guardado("codigo", lic.codigo);
+    try { await abrirApp(lic); }
+    catch (e) { mostrar("Activa tu app", "Pega tu código de activación.", textoError(e)); }
+  }
+
+  $("activar").addEventListener("click", function () { intentar($("codigo").value, true); });
+
+  if ("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js").catch(function () {});
+
+  // El código puede llegar en el enlace (…/#activar=CÓDIGO) o estar guardado de antes.
+  window.addEventListener("hashchange", function () { if (/activar=/.test(location.hash)) location.reload(); });
+  var m = location.hash.match(/activar=([^&]+)/);
+  if (m) history.replaceState(null, "", location.pathname + location.search);
+  var codigo = m ? decodeURIComponent(m[1]) : guardado("codigo");
+  if (codigo) intentar(codigo, !!m);
+  else mostrar("Activa tu app", $("mensaje").textContent);
+})();
+</script>
+</body>
+</html>

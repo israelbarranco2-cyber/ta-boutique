@@ -9,6 +9,14 @@ Cómo funciona
 - El código lleva el nombre del cliente y la fecha de vencimiento. Al vencer, la app
   se bloquea sola; sus datos NO se borran y vuelven al renovar.
 - Los datos de cada cliente viven solo en su celular.
+- Incluye una capacitación de ventas y cobranza (botón 🎓 Aprende en la app).
+  El contenido está en capacitacion.html; si lo cambias, ejecuta npm run preparar.
+
+Qué se publica (carpeta docs/)
+------------------------------
+- docs/index.html  -> página de venta (la que compartes en Facebook/WhatsApp).
+- docs/app/        -> la app cifrada. Ahí llegan tus clientes con su enlace.
+- Para verla en tu laptop antes de publicar:  npm run probar  -> http://localhost:8081
 
 Generar o renovar códigos (en tu laptop)
 ----------------------------------------
@@ -36,7 +44,9 @@ MUY IMPORTANTE
 
 Configuración (config.json)
 ---------------------------
-- url: dirección de tu app en GitHub Pages.
-- contactoWA: tu WhatsApp con lada (ej. 525512345678). Aparece en la pantalla de
-  "Activa tu app" y "Tu suscripción venció". Después de cambiarlo: npm run preparar.
+- url: dirección de la app (termina en /app/).
+- contactoWA: tu WhatsApp con lada (ej. 525512345678). Lo usan los botones
+  "Quiero mi app" de la página y la pantalla "Tu suscripción venció".
+- precioMensual: solo el número (ej. 149). Aparece en la página de venta.
+  Después de cambiar config.json: npm run preparar.
 - nombreVendedor: nombre que aparece en los mensajes.

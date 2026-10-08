@@ -2,151 +2,358 @@
 <html lang="es-MX">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mi Tienda — Controla tu negocio desde el celular</title>
+<meta name="description" content="App para tiendas y vendedoras: registra compras y ventas, sabe quién te debe y cóbrale por WhatsApp con un toque. Funciona sin internet.">
 <meta name="theme-color" content="#156082">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="Mi Tienda">
-<title>Mi Tienda</title>
-<link rel="icon" href="icon.svg">
-<link rel="apple-touch-icon" href="icon-192.png">
-<link rel="manifest" href="manifest.json">
+<meta property="og:title" content="Mi Tienda — Controla tu negocio desde el celular">
+<meta property="og:description" content="Compras, ventas, fiado y cobros por WhatsApp. Tus datos se quedan en tu celular.">
+<meta property="og:image" content="img/inicio.png">
+<meta property="og:locale" content="es_MX">
+<link rel="icon" href="app/icon.svg">
+<link rel="apple-touch-icon" href="app/icon-192.png">
 <style>
-:root{ --pet:#156082; --pet-d:#0e4560; --pet-l:#e6f0f5; --ver:#00A651; --ama:#FFC000; --rojo:#d93636; --rojo-l:#fdeaea; --gris:#6b7785; --tx:#1d2733; --bg:#f2f6f9; }
+:root{
+  --pet:#156082; --pet-d:#0e4560; --pet-l:#e6f0f5;
+  --ver:#00A651; --ver-l:#e3f6ec; --ama:#FFC000; --ama-l:#fff6d9;
+  --rojo:#d93636; --wa:#25D366;
+  --tx:#1d2733; --gris:#5d6a78; --bg:#f2f6f9; --card:#fff; --borde:#dfe7ee;
+}
 *{box-sizing:border-box}
-html,body{margin:0}
-body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--tx);min-height:100vh;display:flex;flex-direction:column}
-header{background:linear-gradient(135deg,var(--pet),var(--pet-d));color:#fff;padding:calc(14px + env(safe-area-inset-top)) 16px 14px;display:flex;align-items:center;gap:10px}
-header img{width:38px;height:38px;border-radius:10px}
-header b{font-size:19px}
-main{flex:1;width:100%;max-width:460px;margin:0 auto;padding:22px 16px}
-.card{background:#fff;border-radius:18px;box-shadow:0 6px 20px rgba(21,96,130,.10);padding:20px}
-h1{font-size:22px;color:var(--pet-d);margin:0 0 8px}
-p{line-height:1.45;margin:0 0 12px}
-.nota{color:var(--gris);font-size:14px}
-textarea{width:100%;min-height:96px;font:inherit;font-size:14px;padding:12px;border:1.5px solid #dfe7ee;border-radius:12px;resize:vertical;word-break:break-all}
-textarea:focus{outline:none;border-color:var(--pet)}
-.btn{display:flex;align-items:center;justify-content:center;width:100%;border:0;border-radius:14px;padding:14px;font:inherit;font-weight:700;font-size:16px;min-height:50px;margin-top:12px;color:#fff;background:var(--pet);cursor:pointer;text-decoration:none}
-.btn.wa{background:#25D366}
-.error{background:var(--rojo-l);color:var(--rojo);border-radius:12px;padding:10px 12px;font-size:14px;margin-top:12px}
-.oculto{display:none}
-.cargando{text-align:center;color:var(--gris);padding-top:40px}
+html{scroll-behavior:smooth}
+body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;color:var(--tx);background:var(--bg);line-height:1.5;font-size:17px}
+img{max-width:100%;height:auto;display:block}
+a{color:inherit}
+.wrap{max-width:1080px;margin:0 auto;padding:0 20px}
+
+/* Barra superior */
+.top{position:sticky;top:0;z-index:10;background:rgba(14,69,96,.96);backdrop-filter:blur(6px);color:#fff}
+.top .wrap{display:flex;align-items:center;justify-content:space-between;height:60px;gap:12px}
+.marca{display:flex;align-items:center;gap:10px;font-weight:800;font-size:19px;text-decoration:none}
+.marca img{width:34px;height:34px;border-radius:9px}
+.top a.ya{font-size:14px;font-weight:700;text-decoration:none;border:1.5px solid rgba(255,255,255,.5);border-radius:999px;padding:7px 14px;white-space:nowrap}
+.top a.ya:hover{background:rgba(255,255,255,.12)}
+
+/* Botones */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border-radius:14px;padding:15px 24px;font-weight:800;font-size:17px;text-decoration:none;border:0;cursor:pointer;min-height:54px;transition:transform .1s,filter .15s}
+.btn:active{transform:scale(.98)}
+.btn:hover{filter:brightness(1.05)}
+.btn.wa{background:var(--wa);color:#fff;box-shadow:0 8px 22px rgba(37,211,102,.35)}
+.btn.claro{background:#fff;color:var(--pet-d);border:1.5px solid var(--borde)}
+.btn svg{width:22px;height:22px}
+
+/* Hero */
+.hero{background:linear-gradient(160deg,var(--pet) 0%,var(--pet-d) 100%);color:#fff;padding:56px 0 0;overflow:hidden}
+.hero .wrap{display:grid;grid-template-columns:1.1fr .9fr;gap:40px;align-items:end}
+.hero .txt{padding-bottom:64px}
+.chip{display:inline-block;background:rgba(255,192,0,.18);color:var(--ama);font-weight:700;font-size:14px;border-radius:999px;padding:6px 14px;margin-bottom:18px}
+.hero h1{font-size:clamp(34px,5.4vw,54px);line-height:1.08;margin:0 0 18px;letter-spacing:-.5px}
+.hero h1 span{color:var(--ama)}
+.hero p.sub{font-size:19px;opacity:.92;margin:0 0 28px;max-width:34em}
+.hero .acciones{display:flex;flex-wrap:wrap;gap:12px;align-items:center}
+.hero .precio{font-size:15px;opacity:.85;margin-top:16px}
+.hero .precio b{color:var(--ama);font-size:18px}
+.telefono{background:#0b1f2b;border-radius:38px;padding:10px;box-shadow:0 30px 60px rgba(0,0,0,.35);max-width:300px;margin:0 auto}
+.telefono img{border-radius:29px}
+.hero .telefono{margin-bottom:-90px;transform:rotate(-2deg)}
+
+/* Secciones */
+section{padding:72px 0}
+.titulo{text-align:center;max-width:680px;margin:0 auto 40px}
+.titulo .k{color:var(--pet);font-weight:800;text-transform:uppercase;letter-spacing:.12em;font-size:13px;margin:0 0 8px}
+.titulo h2{font-size:clamp(26px,3.6vw,36px);line-height:1.15;margin:0 0 12px;color:var(--pet-d)}
+.titulo p{color:var(--gris);margin:0}
+
+/* Dolores */
+.dolores{padding-top:140px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.dolor{background:var(--card);border-radius:18px;padding:22px;box-shadow:0 6px 20px rgba(21,96,130,.08)}
+.dolor .e{font-size:30px}
+.dolor h3{margin:10px 0 6px;font-size:18px}
+.dolor p{margin:0;color:var(--gris);font-size:15px}
+
+/* Funciones con captura */
+.funcion{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center;margin-bottom:72px}
+.funcion:last-child{margin-bottom:0}
+.funcion.inv .media{order:2}
+.funcion .media .telefono{max-width:280px}
+.funcion h3{font-size:clamp(24px,3vw,30px);line-height:1.2;margin:0 0 12px;color:var(--pet-d)}
+.funcion p{color:var(--gris);margin:0 0 16px}
+.funcion ul{list-style:none;padding:0;margin:0}
+.funcion li{padding:7px 0 7px 32px;position:relative}
+.funcion li::before{content:"✓";position:absolute;left:0;top:6px;width:22px;height:22px;border-radius:50%;background:var(--ver-l);color:var(--ver);font-weight:900;font-size:13px;display:grid;place-items:center}
+
+/* Mini funciones */
+.blanco{background:#fff}
+.curso{background:linear-gradient(180deg,var(--ama-l),#fff)}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.mini{border:1.5px solid var(--borde);border-radius:16px;padding:18px}
+.mini .e{font-size:26px}
+.mini b{display:block;margin:8px 0 4px}
+.mini span{color:var(--gris);font-size:14px}
+
+/* Pasos */
+.pasos{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;counter-reset:paso}
+.paso{background:var(--card);border-radius:18px;padding:24px;position:relative;box-shadow:0 6px 20px rgba(21,96,130,.08)}
+.paso::before{counter-increment:paso;content:counter(paso);display:grid;place-items:center;width:40px;height:40px;border-radius:50%;background:var(--pet);color:#fff;font-weight:800;font-size:18px;margin-bottom:12px}
+.paso h3{margin:0 0 6px;font-size:18px}
+.paso p{margin:0;color:var(--gris);font-size:15px}
+
+/* Precio */
+.planes{display:flex;justify-content:center}
+.plan{background:var(--card);border-radius:24px;padding:32px;max-width:440px;width:100%;box-shadow:0 14px 40px rgba(21,96,130,.14);border:2px solid var(--pet);text-align:center}
+.plan .nom{font-weight:800;color:var(--pet);text-transform:uppercase;letter-spacing:.1em;font-size:13px}
+.plan .monto{font-size:46px;font-weight:900;color:var(--pet-d);margin:10px 0 0;line-height:1}
+.plan .monto small{font-size:17px;font-weight:600;color:var(--gris)}
+.plan .nota{color:var(--gris);font-size:14px;margin:8px 0 18px}
+.plan ul{text-align:left;list-style:none;padding:0;margin:0 0 22px}
+.plan li{padding:6px 0 6px 30px;position:relative;font-size:16px}
+.plan li::before{content:"✓";position:absolute;left:0;color:var(--ver);font-weight:900}
+.plan .btn{width:100%}
+
+/* Preguntas */
+.faq{max-width:760px;margin:0 auto}
+details{background:var(--card);border-radius:14px;padding:4px 18px;margin-bottom:10px;box-shadow:0 3px 12px rgba(21,96,130,.06)}
+summary{cursor:pointer;font-weight:700;padding:14px 0;list-style:none;display:flex;justify-content:space-between;gap:12px}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"+";color:var(--pet);font-size:22px;line-height:1}
+details[open] summary::after{content:"−"}
+details p{margin:0 0 16px;color:var(--gris)}
+
+/* Cierre */
+.cierre{background:linear-gradient(160deg,var(--pet) 0%,var(--pet-d) 100%);color:#fff;text-align:center}
+.cierre h2{font-size:clamp(28px,4vw,40px);margin:0 0 12px}
+.cierre p{opacity:.9;margin:0 0 26px}
+footer{background:var(--pet-d);color:rgba(255,255,255,.7);text-align:center;font-size:14px;padding:22px 0 30px;border-top:1px solid rgba(255,255,255,.1)}
+footer a{color:#fff}
+
+/* Botón flotante en celular */
+.flotante{display:none}
+
+@media (max-width:860px){
+  .hero .wrap{grid-template-columns:1fr;gap:10px}
+  .hero{padding-top:40px;text-align:center}
+  .hero .txt{padding-bottom:36px}
+  .hero p.sub{margin-left:auto;margin-right:auto}
+  .hero .acciones{justify-content:center}
+  .hero .telefono{max-width:250px}
+  .dolores{padding-top:130px}
+  .grid3,.pasos{grid-template-columns:1fr}
+  .grid4{grid-template-columns:1fr 1fr}
+  .funcion,.funcion.inv{grid-template-columns:1fr;gap:26px;margin-bottom:60px}
+  .funcion .media,.funcion.inv .media{order:-1}
+  .funcion .media .telefono{max-width:240px}
+  section{padding:56px 0}
+  .flotante{display:flex;position:fixed;left:16px;right:16px;bottom:14px;z-index:20;transform:translateY(130%);transition:transform .25s}
+  .flotante.ver{transform:none}
+  .flotante .btn{width:100%}
+}
+@media (max-width:420px){ .grid4{grid-template-columns:1fr} .top a.ya{padding:6px 11px;font-size:13px} }
 </style>
 </head>
 <body>
-<header><img src="icon.svg" alt=""><b>Mi Tienda</b></header>
-<main>
-  <div id="cargando" class="cargando">Abriendo…</div>
 
-  <div id="pantalla" class="card oculto">
-    <h1 id="titulo">Activa tu app</h1>
-    <p id="mensaje">Para usar Mi Tienda necesitas un código de activación. Si ya lo compraste, ábrelo desde el enlace que te mandaron o pégalo aquí.</p>
-    <textarea id="codigo" placeholder="Pega aquí tu código de activación" autocomplete="off" spellcheck="false"></textarea>
-    <button class="btn" id="activar">Activar</button>
-    <div id="error" class="error oculto"></div>
-    <a id="contacto" class="btn wa oculto" target="_blank" rel="noopener">💬 Comprar o renovar por WhatsApp</a>
-    <p class="nota" style="margin-top:14px">Tus datos se guardan solo en este celular. Si tu suscripción vence, no se borran: vuelven a aparecer al renovar.</p>
+<header class="top">
+  <div class="wrap">
+    <a class="marca" href="#"><img src="app/icon-192.png" alt="">Mi Tienda</a>
+    <a class="ya" href="app/">Ya tengo mi código</a>
   </div>
-</main>
+</header>
 
-<script src="config.js"></script>
+<div class="hero">
+  <div class="wrap">
+    <div class="txt">
+      <span class="chip">📱 App para tiendas y vendedoras</span>
+      <h1>Tu negocio en orden, <span>desde tu celular</span>.</h1>
+      <p class="sub">Registra lo que compras y lo que vendes, sabe al momento quién te debe y cóbrale por WhatsApp con un solo toque. Sin libretas, sin hojas de Excel, y funciona aunque no tengas internet.</p>
+      <div class="acciones">
+        <a class="btn wa js-wa" href="#precio"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.2-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.8 11.9 11.9 0 0 0 4.6 4c1.7.7 2.3.8 3.2.6.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.1-1.2l-.4-.2Z"/></svg>Quiero mi app</a>
+        <a class="btn claro" href="#funciones">Ver cómo funciona</a>
+      </div>
+      <p class="precio js-precio-hero"></p>
+    </div>
+    <div class="telefono"><img src="img/inicio.png" alt="Ficha de producto en Mi Tienda" width="390" height="844"></div>
+  </div>
+</div>
+
+<section class="dolores">
+  <div class="wrap">
+    <div class="titulo">
+      <p class="k">¿Te suena?</p>
+      <h2>Vender es lo fácil. Lo difícil es llevar la cuenta.</h2>
+    </div>
+    <div class="grid3">
+      <div class="dolor"><div class="e">📒</div><h3>La libreta ya no alcanza</h3><p>Ventas en una hoja, compras en otra, el fiado en la memoria… y a fin de mes no sabes cuánto ganaste.</p></div>
+      <div class="dolor"><div class="e">😬</div><h3>Te da pena cobrar</h3><p>Se te olvida quién te debe, cuánto, y desde cuándo. Y escribir “oye, ¿me pagas?” cuesta.</p></div>
+      <div class="dolor"><div class="e">🤷‍♀️</div><h3>No sabes qué te conviene</h3><p>¿Qué producto deja más? ¿Cuál ya no vuelves a surtir? Sin números, todo es a ojo.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="funciones" class="blanco">
+  <div class="wrap">
+    <div class="titulo">
+      <p class="k">Lo que hace</p>
+      <h2>Todo tu negocio en una sola app</h2>
+      <p>Pensada para usarse con una mano, entre cliente y cliente.</p>
+    </div>
+
+    <div class="funcion">
+      <div class="media"><div class="telefono"><img src="img/ventas.png" alt="Lista de ventas con pagos y adeudos" loading="lazy" width="390" height="844"></div></div>
+      <div>
+        <h3>💰 Ventas y fiado, sin enredos</h3>
+        <p>Cada venta queda registrada con quién la compró, cuánto pagó y cuánto debe.</p>
+        <ul>
+          <li>Abonos parciales: ve cómo baja la deuda</li>
+          <li>Total vendido y total por cobrar siempre a la vista</li>
+          <li>Ganancia de cada venta calculada sola</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="funcion inv">
+      <div class="media"><div class="telefono"><img src="img/cobros.png" alt="Recordatorios de cobro por WhatsApp" loading="lazy" width="390" height="844"></div></div>
+      <div>
+        <h3>💬 Cobra por WhatsApp con un toque</h3>
+        <p>Programa recordatorios y la app te avisa el día que toca. Tocas “Enviar” y se abre WhatsApp con un mensaje amable ya escrito.</p>
+        <ul>
+          <li>Recordatorios que se repiten cada semana hasta que paguen</li>
+          <li>Avisos de devolución a tus proveedores</li>
+          <li>Mensajes con tu estilo: tú escribes las plantillas</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="funcion">
+      <div class="media"><div class="telefono"><img src="img/analisis.png" alt="Matriz de productos estrella, vaca, interrogante y perro" loading="lazy" width="390" height="844"></div></div>
+      <div>
+        <h3>📈 Sabe qué producto te conviene</h3>
+        <p>La app clasifica tus productos según cuánto dejan y qué tan rápido se venden, y te dice qué hacer con cada uno.</p>
+        <ul>
+          <li>⭐ Estrella: nunca te quedes sin él</li>
+          <li>🐶 Perro: mejor ya no lo surtas</li>
+          <li>Margen, rotación, stock y ganancia por producto</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="titulo"><p class="k">Y además</p><h2>Detalles que hacen la diferencia</h2></div>
+    <div class="grid4">
+      <div class="mini"><div class="e">📷</div><b>Catálogo con fotos</b><span>Toma la foto con la cámara y comparte la ficha del producto.</span></div>
+      <div class="mini"><div class="e">📥</div><b>Compras y proveedores</b><span>Lo que surtes, cuánto costó y a quién se lo compraste.</span></div>
+      <div class="mini"><div class="e">✈️</div><b>Funciona sin internet</b><span>En el tianguis, en la calle o donde no haya señal.</span></div>
+      <div class="mini"><div class="e">🔒</div><b>Tus datos son tuyos</b><span>Se guardan solo en tu celular. Nadie más los ve.</span></div>
+      <div class="mini"><div class="e">📗</div><b>Exporta a Excel</b><span>Descarga todo para tu contador o para ti.</span></div>
+      <div class="mini"><div class="e">🛟</div><b>Respaldo</b><span>Guárdalo en Drive o WhatsApp y recupéralo si cambias de celular.</span></div>
+      <div class="mini"><div class="e">↩️</div><b>Devoluciones</b><span>Lo que no se vendió, con fecha y aviso al proveedor.</span></div>
+      <div class="mini"><div class="e">📦</div><b>Stock al día</b><span>Sabe cuántas piezas te quedan sin contar.</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="curso">
+  <div class="wrap">
+    <div class="titulo">
+      <p class="k">Valor agregado</p>
+      <h2>🎓 Capacitación incluida: vende más y cobra sin pena</h2>
+      <p>Dentro de la app tienes lecciones cortas con frases listas para usar con tus clientas, con ejercicios para practicar.</p>
+    </div>
+    <div class="grid4">
+      <div class="mini"><div class="e">🤝</div><b>Negociación de ventas</b><span>Los 5 pasos de una buena venta y cómo responder si te piden descuento sin perder tu ganancia.</span></div>
+      <div class="mini"><div class="e">🛡️</div><b>Objeciones al vender</b><span>Qué contestar a “está caro”, “lo voy a pensar” o “en otro lado está más barato”.</span></div>
+      <div class="mini"><div class="e">💰</div><b>Cobrar sin pena</b><span>Cómo dar crédito con reglas claras y tu escalera de cobro paso a paso.</span></div>
+      <div class="mini"><div class="e">🧾</div><b>Objeciones al cobrar</b><span>Respuestas a “ahorita no tengo”, “ya te pagué” o “la próxima semana”.</span></div>
+    </div>
+    <p style="text-align:center;color:var(--gris);margin:22px 0 0">Además: <b>mensajes de WhatsApp listos</b> que puedes usar como tu plantilla de cobro con un toque.</p>
+  </div>
+</section>
+
+<section class="blanco">
+  <div class="wrap">
+    <div class="titulo"><p class="k">Cómo la obtienes</p><h2>Lista en 5 minutos</h2></div>
+    <div class="pasos">
+      <div class="paso"><h3>Escríbeme por WhatsApp</h3><p>Te explico lo que necesites y me haces tu pago por transferencia o en efectivo.</p></div>
+      <div class="paso"><h3>Recibe tu enlace</h3><p>Te mando un enlace personal. Lo abres en tu celular y tu app se activa sola.</p></div>
+      <div class="paso"><h3>Instálala y listo</h3><p>En Chrome: menú ⋮ → “Instalar aplicación”. En iPhone: Compartir → “Agregar a inicio”. Queda con su ícono como cualquier app.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="precio">
+  <div class="wrap">
+    <div class="titulo"><p class="k">Precio</p><h2>Un precio sencillo, sin sorpresas</h2></div>
+    <div class="planes">
+      <div class="plan">
+        <div class="nom">Suscripción mensual</div>
+        <div class="monto js-precio-plan">Pregunta por el precio</div>
+        <p class="nota">Renuevas cada mes. Si un mes no renuevas, tus datos no se borran: vuelven a aparecer al renovar.</p>
+        <ul>
+          <li>Todas las funciones, sin límites de productos ni ventas</li>
+          <li>🎓 Capacitación de ventas y cobranza</li>
+          <li>Actualizaciones incluidas</li>
+          <li>Funciona sin internet</li>
+          <li>Ayuda por WhatsApp</li>
+        </ul>
+        <a class="btn wa js-wa" href="#">Quiero mi app</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="blanco">
+  <div class="wrap">
+    <div class="titulo"><p class="k">Preguntas</p><h2>Lo que más me preguntan</h2></div>
+    <div class="faq">
+      <details><summary>¿Necesito internet para usarla?</summary><p>Solo para activarla la primera vez y para recibir actualizaciones. Después funciona sin internet.</p></details>
+      <details><summary>¿Dónde se guardan mis datos?</summary><p>En tu propio celular. No se suben a ningún servidor, así que nadie más puede ver tus ventas ni a tus clientes. Por eso te recomiendo hacer un respaldo de vez en cuando desde la misma app.</p></details>
+      <details><summary>¿Qué pasa si no renuevo?</summary><p>La app se pausa hasta que renueves. Tus datos no se borran: cuando renuevas, todo sigue tal como lo dejaste.</p></details>
+      <details><summary>¿Funciona en iPhone?</summary><p>Sí. Se abre en Safari y se agrega a la pantalla de inicio desde el botón Compartir. En Android funciona con Chrome.</p></details>
+      <details><summary>¿Y si cambio de celular?</summary><p>Haces un respaldo en el celular viejo, abres tu enlace en el nuevo y restauras el respaldo. Todo regresa.</p></details>
+      <details><summary>¿Se descarga de la Play Store?</summary><p>No hace falta. Se instala directo desde tu enlace personal y queda en tu pantalla como cualquier otra app, sin ocupar mucho espacio.</p></details>
+    </div>
+  </div>
+</section>
+
+<section class="cierre">
+  <div class="wrap">
+    <h2>Empieza a llevar tu negocio en orden hoy</h2>
+    <p>Escríbeme y en 5 minutos tienes tu app funcionando.</p>
+    <a class="btn wa js-wa" href="#">Quiero mi app</a>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">¿Ya la compraste? <a href="app/">Abre tu app aquí</a> · © <span id="anio"></span> Mi Tienda</div>
+</footer>
+
+<div class="flotante" id="flotante"><a class="btn wa js-wa" href="#">💬 Quiero mi app</a></div>
+
+<script src="datos.js"></script>
 <script>
 (function () {
-  "use strict";
-  var L = window.LICENCIA || {};
-  var $ = function (id) { return document.getElementById(id); };
-  var guardado = function (k, v) { try { if (v === undefined) return localStorage.getItem("lic_" + k); localStorage.setItem("lic_" + k, v); } catch (e) { return null; } };
-  var b64 = function (s) { s = s.replace(/-/g, "+").replace(/_/g, "/"); while (s.length % 4) s += "="; return Uint8Array.from(atob(s), function (c) { return c.charCodeAt(0); }); };
-  var fecha = function (iso) { return iso.split("-").reverse().join("/"); };
-
-  // Hora "más reciente vista": evita que atrasar el reloj del celular extienda la suscripción.
-  function ahora() {
-    var n = Date.now(), max = Number(guardado("visto")) || 0;
-    if (n > max) { guardado("visto", String(n)); max = n; }
-    return max;
+  var V = window.VENTA || {};
+  var tel = (V.contactoWA || "").replace(/\D/g, "");
+  if (tel.length === 10) tel = "52" + tel;
+  var msg = encodeURIComponent("Hola, vi la página de " + (V.nombre || "Mi Tienda") + " y quiero mi app 🙂");
+  document.querySelectorAll(".js-wa").forEach(function (a) {
+    if (tel) { a.href = "https://wa.me/" + tel + "?text=" + msg; a.target = "_blank"; a.rel = "noopener"; }
+    else if (a.getAttribute("href") === "#") a.href = "#precio";
+  });
+  if (V.precio) {
+    document.querySelector(".js-precio-plan").innerHTML = "$" + V.precio + " <small>al mes</small>";
+    document.querySelector(".js-precio-hero").innerHTML = "Solo <b>$" + V.precio + " al mes</b>. Sin plazos forzosos.";
   }
-
-  async function leerCodigo(codigo) {
-    codigo = (codigo || "").replace(/\s+/g, "");
-    var partes = codigo.split(".");
-    if (partes.length !== 2) throw new Error("formato");
-    var llave = await crypto.subtle.importKey("jwk", L.llave, { name: "ECDSA", namedCurve: "P-256" }, false, ["verify"]);
-    var ok = await crypto.subtle.verify({ name: "ECDSA", hash: "SHA-256" }, llave, b64(partes[1]), new TextEncoder().encode(partes[0]));
-    if (!ok) throw new Error("firma");
-    var datos = JSON.parse(new TextDecoder().decode(b64(partes[0])));
-    datos.codigo = codigo;
-    datos.vencido = ahora() > new Date(datos.v + "T23:59:59").getTime();
-    return datos;
-  }
-
-  async function abrirApp(lic) {
-    var res = await fetch("app.enc");
-    if (!res.ok) throw new Error("No se pudo descargar la app (" + res.status + ")");
-    var bytes = new Uint8Array(await res.arrayBuffer());
-    var llave = await crypto.subtle.importKey("raw", b64(lic.k), "AES-GCM", false, ["decrypt"]);
-    var html = new TextDecoder().decode(await crypto.subtle.decrypt({ name: "AES-GCM", iv: bytes.slice(0, 12) }, llave, bytes.slice(12)));
-    document.open(); document.write(html); document.close();
-    marcarLicencia(lic);
-  }
-
-  // Línea discreta bajo el encabezado de la app con el nombre del cliente y el vencimiento.
-  function marcarLicencia(lic) {
-    var poner = function () {
-      var h = document.querySelector("header.top");
-      if (!h) return setTimeout(poner, 50);
-      var faltan = Math.ceil((new Date(lic.v + "T23:59:59") - Date.now()) / 864e5);
-      var d = document.createElement("div");
-      d.textContent = "Licencia de " + lic.n + " · vence " + fecha(lic.v) + (faltan <= 5 ? " (faltan " + faltan + " día" + (faltan === 1 ? "" : "s") + ", pide tu renovación)" : "");
-      d.style.cssText = "font:12px system-ui,sans-serif;text-align:center;padding:5px 10px;" + (faltan <= 5 ? "background:#fff6d9;color:#7a5a00" : "background:#e6f0f5;color:#0e4560");
-      h.insertAdjacentElement("afterend", d);
-    };
-    poner();
-  }
-
-  function mostrar(titulo, mensaje, error) {
-    $("cargando").classList.add("oculto");
-    $("pantalla").classList.remove("oculto");
-    $("titulo").textContent = titulo;
-    $("mensaje").textContent = mensaje;
-    $("error").textContent = error || "";
-    $("error").classList.toggle("oculto", !error);
-    if (L.contactoWA) {
-      var a = $("contacto");
-      a.href = "https://wa.me/" + L.contactoWA.replace(/\D/g, "") + "?text=" + encodeURIComponent("Hola, quiero comprar o renovar mi código de " + (L.nombre || "Mi Tienda") + ".");
-      a.classList.remove("oculto");
-    }
-  }
-
-  function textoError(e) {
-    if (e.message === "formato" || e.message === "firma") return "Ese código no es válido. Revisa que lo hayas copiado completo.";
-    if (e.name === "OperationError") return "No se pudo abrir la app con este código. Pide uno nuevo.";
-    return "No se pudo abrir la app: " + (e.message || e);
-  }
-
-  async function intentar(codigo, desdeUsuario) {
-    var lic;
-    try { lic = await leerCodigo(codigo); }
-    catch (e) { return mostrar("Activa tu app", "Pega tu código de activación.", textoError(e)); }
-    if (lic.vencido) {
-      if (desdeUsuario) guardado("codigo", lic.codigo);
-      return mostrar("Tu suscripción venció", "La licencia de " + lic.n + " venció el " + fecha(lic.v) + ". Pide tu código de renovación y pégalo aquí. Tus datos siguen guardados.", desdeUsuario ? "Este código ya venció el " + fecha(lic.v) + "." : "");
-    }
-    guardado("codigo", lic.codigo);
-    try { await abrirApp(lic); }
-    catch (e) { mostrar("Activa tu app", "Pega tu código de activación.", textoError(e)); }
-  }
-
-  $("activar").addEventListener("click", function () { intentar($("codigo").value, true); });
-
-  if ("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js").catch(function () {});
-
-  // El código puede llegar en el enlace (…/#activar=CÓDIGO) o estar guardado de antes.
-  window.addEventListener("hashchange", function () { if (/activar=/.test(location.hash)) location.reload(); });
-  var m = location.hash.match(/activar=([^&]+)/);
-  if (m) history.replaceState(null, "", location.pathname + location.search);
-  var codigo = m ? decodeURIComponent(m[1]) : guardado("codigo");
-  if (codigo) intentar(codigo, !!m);
-  else mostrar("Activa tu app", $("mensaje").textContent);
+  document.getElementById("anio").textContent = new Date().getFullYear();
+  // Botón flotante en celular: aparece después del inicio y se esconde en el precio.
+  var f = document.getElementById("flotante"), precio = document.getElementById("precio");
+  addEventListener("scroll", function () {
+    var r = precio.getBoundingClientRect();
+    f.classList.toggle("ver", scrollY > 500 && !(r.top < innerHeight && r.bottom > 0));
+  }, { passive: true });
 })();
 </script>
 </body>

@@ -1,0 +1,271 @@
+<!-- ============ CAPACITACIÓN (valor agregado) ============
+     Se inserta antes de </body> de la app al ejecutar `npm run preparar` y viaja cifrada con ella. -->
+<style>
+.cap-btn{background:rgba(255,255,255,.16);color:#fff;border:0;border-radius:12px;padding:8px 11px;font:inherit;font-size:14px;font-weight:700;cursor:pointer;white-space:nowrap}
+.cap-btn:active{transform:scale(.96)}
+.cap-ov{position:fixed;inset:0;z-index:100;background:var(--bg,#f2f6f9);overflow-y:auto;-webkit-overflow-scrolling:touch;display:none}
+.cap-ov.ver{display:block}
+.cap-top{position:sticky;top:0;z-index:2;background:linear-gradient(135deg,#156082,#0e4560);color:#fff;padding:calc(12px + env(safe-area-inset-top)) 14px 12px;display:flex;align-items:center;gap:10px}
+.cap-top b{flex:1;font-size:18px}
+.cap-top button{background:rgba(255,255,255,.16);color:#fff;border:0;border-radius:11px;min-width:42px;height:40px;font:inherit;font-weight:700;font-size:15px;cursor:pointer;padding:0 12px}
+.cap-in{max-width:640px;margin:0 auto;padding:16px 14px 40px}
+.cap-hero{background:linear-gradient(160deg,#156082,#0e4560);color:#fff;border-radius:20px;padding:18px;margin-bottom:14px}
+.cap-hero h2{color:#fff;margin:0 0 6px;font-size:21px}
+.cap-hero p{margin:0 0 12px;opacity:.9;font-size:15px}
+.cap-barra{height:10px;background:rgba(255,255,255,.2);border-radius:99px;overflow:hidden}
+.cap-barra i{display:block;height:100%;background:#FFC000;border-radius:99px;transition:width .3s}
+.cap-hero small{display:block;margin-top:6px;opacity:.85}
+.cap-mod{display:flex;gap:12px;align-items:center;background:#fff;border-radius:16px;padding:14px;margin-bottom:10px;box-shadow:0 4px 14px rgba(21,96,130,.08);cursor:pointer;border:0;width:100%;text-align:left;font:inherit;color:inherit}
+.cap-mod .e{font-size:28px;width:44px;height:44px;display:grid;place-items:center;background:#e6f0f5;border-radius:12px;flex-shrink:0}
+.cap-mod .t{flex:1;min-width:0}
+.cap-mod .t b{display:block;font-size:16px}
+.cap-mod .t span{color:#6b7785;font-size:13px}
+.cap-mod .ok{font-size:20px}
+.cap-card{background:#fff;border-radius:18px;padding:16px;margin-bottom:12px;box-shadow:0 4px 14px rgba(21,96,130,.08)}
+.cap-card h3{margin:0 0 8px;font-size:17px;color:#0e4560}
+.cap-card p,.cap-card li{font-size:15px;line-height:1.5}
+.cap-card p{margin:0 0 10px}
+.cap-card ul,.cap-card ol{margin:0 0 6px;padding-left:20px}
+.cap-card li{margin-bottom:6px}
+.cap-obj{border-left:4px solid #FFC000;background:#fff;border-radius:14px;padding:12px 14px;margin-bottom:10px;box-shadow:0 4px 14px rgba(21,96,130,.06)}
+.cap-obj .q{font-weight:800;margin-bottom:6px}
+.cap-obj .r{background:#e3f6ec;border-radius:10px;padding:10px 12px;font-size:15px;line-height:1.45;margin:6px 0}
+.cap-obj .r::before{content:"Tú: ";font-weight:800;color:#00753a}
+.cap-obj .tip{font-size:13px;color:#6b7785}
+.cap-no{background:#fdeaea;border-radius:12px;padding:10px 12px;font-size:14px;margin-top:8px}
+.cap-msg{background:#fff;border-radius:14px;padding:12px 14px;margin-bottom:10px;box-shadow:0 4px 14px rgba(21,96,130,.06)}
+.cap-msg .c{font-weight:800;font-size:13px;color:#156082;text-transform:uppercase;letter-spacing:.04em}
+.cap-msg .x{background:#dcf8c6;border-radius:10px 10px 10px 2px;padding:10px 12px;margin:8px 0;font-size:15px;line-height:1.45;white-space:pre-wrap}
+.cap-msg .bs{display:flex;gap:8px;flex-wrap:wrap}
+.cap-msg .bs button,.cap-sig{border:0;border-radius:11px;padding:9px 12px;font:inherit;font-size:14px;font-weight:700;cursor:pointer;background:#e6f0f5;color:#0e4560}
+.cap-quiz{background:#fff6d9;border-radius:18px;padding:16px;margin:16px 0 12px}
+.cap-quiz h3{margin:0 0 10px;color:#7a5a00;font-size:17px}
+.cap-p{margin-bottom:14px}
+.cap-p b{display:block;margin-bottom:8px;font-size:15px}
+.cap-op{display:block;width:100%;text-align:left;border:1.5px solid #e9dcae;background:#fff;border-radius:12px;padding:10px 12px;margin-bottom:7px;font:inherit;font-size:15px;cursor:pointer;color:inherit}
+.cap-op.bien{border-color:#00A651;background:#e3f6ec}
+.cap-op.mal{border-color:#d93636;background:#fdeaea}
+.cap-fb{font-size:14px;margin-top:4px}
+.cap-sig{width:100%;padding:14px;font-size:16px;background:#156082;color:#fff;margin-top:6px}
+.cap-aviso{display:flex;gap:12px;align-items:center;background:linear-gradient(135deg,#fff6d9,#ffeeb3);border-radius:16px;padding:12px 14px;margin:0 0 14px;cursor:pointer;border:0;width:100%;text-align:left;font:inherit;color:#3b2d00}
+.cap-aviso .e{font-size:28px}
+.cap-aviso b{display:block}
+.cap-aviso span{font-size:13px}
+</style>
+
+<div class="cap-ov" id="capOv" role="dialog" aria-modal="true" aria-label="Capacitación">
+  <div class="cap-top"><button id="capAtras" aria-label="Atrás">←</button><b id="capTit">🎓 Capacitación</b><button id="capCerrar" aria-label="Cerrar">✕</button></div>
+  <div class="cap-in" id="capIn"></div>
+</div>
+
+<script>
+(function () {
+  "use strict";
+  var GUARDA = "curso_progreso";
+
+  var MODULOS = [
+    {
+      id: "venta", e: "🤝", t: "Negociación de ventas", d: "Vende más sin bajar tu precio · 5 min",
+      html:
+        '<div class="cap-card"><h3>La regla de oro</h3><p>La gente no compra productos: compra lo que el producto <b>hace por ella</b>. Un esmalte no es “un frasco de 15 ml”: es “uñas bonitas toda la semana sin ir al salón”.</p></div>' +
+        '<div class="cap-card"><h3>Los 5 pasos de una buena venta</h3><ol>' +
+          '<li><b>Saluda y conecta.</b> Llama a tu cliente por su nombre y pregunta algo personal ligero: “¿Cómo te fue en la fiesta?”.</li>' +
+          '<li><b>Pregunta antes de ofrecer.</b> “¿Para qué ocasión lo buscas?”, “¿Qué usas ahorita?”. Quien pregunta, dirige la plática.</li>' +
+          '<li><b>Presenta el beneficio, no la ficha técnica.</b> “Este dura 7 días sin despostillarse” vende más que “tiene fórmula gel”.</li>' +
+          '<li><b>Di el precio al final y con seguridad.</b> Sin disculparte y sin “nomás”. “Son $65” y te quedas callada.</li>' +
+          '<li><b>Cierra con una pregunta fácil.</b> “¿Te lo llevas en rojo o en nude?” en vez de “¿lo quieres?”.</li>' +
+        '</ol></div>' +
+        '<div class="cap-card"><h3>Técnicas que funcionan</h3><ul>' +
+          '<li><b>Combo:</b> “Llévate el esmalte y la lima en $85 en vez de $90”. Subes tu venta y la clienta siente que gana.</li>' +
+          '<li><b>Ancla de precio:</b> enseña primero el producto más caro; el siguiente se siente accesible.</li>' +
+          '<li><b>Prueba social:</b> “Es el que más me piden este mes”. Usa el análisis de la app para saber cuál es de verdad.</li>' +
+          '<li><b>Escasez real:</b> “Me quedan 3 de este tono”. Solo si es cierto: la confianza vale más que una venta.</li>' +
+        '</ul></div>' +
+        '<div class="cap-card"><h3>Si te piden descuento</h3><p>Nunca bajes el precio a la primera. Mejor <b>cambia algo a cambio</b>:</p><ul>' +
+          '<li>“Si te llevas 2, te dejo cada uno en $60”.</li>' +
+          '<li>“Si me pagas completo hoy, te regalo la lima”.</li>' +
+        '</ul><div class="cap-no">❌ Evita: “Bueno, te lo dejo en lo que quieras”. Enseña a tus clientes que tu precio siempre se negocia.</div></div>',
+      quiz: [
+        { p: "Una clienta duda. ¿Qué pregunta de cierre es mejor?", o: ["¿Entonces sí lo quieres?", "¿Te lo llevas en rojo o en nude?", "¿Lo piensas y me avisas?"], c: 1, x: "La pregunta de alternativa hace fácil decir que sí: solo elige entre dos opciones." },
+        { p: "Te piden descuento. ¿Qué conviene más?", o: ["Bajar el precio para no perder la venta", "Dar algo a cambio: precio menor si se lleva 2", "Decir que no y ya"], c: 1, x: "Negociar a cambio de algo (más piezas, pago completo) protege tu ganancia." }
+      ]
+    },
+    {
+      id: "objeciones", e: "🛡️", t: "Objeciones al vender", d: "Qué contestar cuando dicen “está caro” · 6 min",
+      html:
+        '<div class="cap-card"><h3>Una objeción es una pregunta disfrazada</h3><p>Cuando alguien pone un “pero”, sigue interesada. Usa el método <b>E-V-P-R</b>:</p><ol>' +
+          '<li><b>Escucha</b> completo, sin interrumpir.</li>' +
+          '<li><b>Valida:</b> “Te entiendo”, “Tiene sentido”. Nunca “no, lo que pasa es que…”.</li>' +
+          '<li><b>Pregunta</b> para encontrar la duda real: “¿Qué es lo que más te hace dudar?”.</li>' +
+          '<li><b>Responde</b> y vuelve a cerrar.</li>' +
+        '</ol></div>' +
+        '<div class="cap-obj"><div class="q">😕 “Está muy caro.”</div><div class="r">Te entiendo. ¿Caro comparado con qué? Este te dura toda la semana; uno barato se despostilla en dos días y terminas comprando otro.</div><div class="tip">Habla de lo que dura o rinde, no del precio.</div></div>' +
+        '<div class="cap-obj"><div class="q">🤔 “Lo voy a pensar.”</div><div class="r">¡Claro! Para ayudarte a decidir: ¿qué es lo que te hace dudar, el tono o el precio?</div><div class="tip">“Lo pienso” casi siempre esconde otra duda. Descúbrela con cariño.</div></div>' +
+        '<div class="cap-obj"><div class="q">🏪 “En otro lado está más barato.”</div><div class="r">Puede ser. Conmigo te llevas la garantía de que si sale mal te lo cambio, y te lo entrego donde estés. ¿Te lo aparto?</div><div class="tip">Compite con servicio y confianza, no con precio.</div></div>' +
+        '<div class="cap-obj"><div class="q">💸 “Ahorita no traigo dinero.”</div><div class="r">No te preocupes. Te lo aparto con $30 y el resto me lo das el viernes. ¿Te funciona?</div><div class="tip">Si das crédito, regístralo en la app con fecha de pago (módulo de cobranza).</div></div>' +
+        '<div class="cap-obj"><div class="q">👨‍👩‍👧 “Le tengo que preguntar a mi esposo.”</div><div class="r">Me parece muy bien. ¿Te mando la foto por WhatsApp para que se la enseñes? Te lo aparto hasta mañana.</div><div class="tip">Dale una herramienta (la ficha del producto) y un plazo.</div></div>' +
+        '<div class="cap-obj"><div class="q">🙅 “No lo necesito.”</div><div class="r">Va, gracias por decirme. Solo por curiosidad, ¿qué usas ahorita? Así te aviso cuando me llegue algo que te sirva.</div><div class="tip">No insistas. Gana información para la próxima venta.</div></div>' +
+        '<div class="cap-obj"><div class="q">😟 “¿Y si no me gusta?”</div><div class="r">Si al abrirlo no es el tono que esperabas, me avisas ese día y te lo cambio. Quiero que quedes contenta.</div><div class="tip">Quitar el riesgo cierra muchas ventas. Pon tus reglas claras.</div></div>',
+      quiz: [
+        { p: "Te dicen “lo voy a pensar”. ¿Qué haces?", o: ["“Ok, avísame”", "Preguntar con amabilidad qué le hace dudar", "Bajar el precio de inmediato"], c: 1, x: "Encontrar la duda real te deja resolverla en ese momento." },
+        { p: "¿Cuál es el primer paso ante cualquier objeción?", o: ["Explicar por qué está equivocada", "Escuchar completo sin interrumpir", "Ofrecer descuento"], c: 1, x: "Escuchar y validar baja la tensión y hace que te escuchen a ti." }
+      ]
+    },
+    {
+      id: "cobranza", e: "💰", t: "Cobrar sin pena", d: "El fiado se cobra desde que se vende · 6 min",
+      html:
+        '<div class="cap-card"><h3>El cobro empieza al vender</h3><p>La mayoría de las deudas que no se pagan nacieron con un “págame cuando puedas”. Antes de entregar a crédito, acuerda tres cosas:</p><ol>' +
+          '<li><b>Cuánto</b> se paga hoy (ideal: al menos la mitad).</li>' +
+          '<li><b>Cuándo</b> exactamente se paga lo demás: “el viernes 15”, no “la otra semana”.</li>' +
+          '<li><b>Cómo</b>: efectivo, transferencia, en abonos.</li>' +
+        '</ol><p>Registra la venta en la app con lo que pagó y programa el recordatorio ⏰ en ese mismo momento.</p></div>' +
+        '<div class="cap-card"><h3>Tu escalera de cobro</h3><ul>' +
+          '<li><b>1 día antes:</b> recordatorio amable. “Mañana quedamos, ¿todo bien?”.</li>' +
+          '<li><b>El día:</b> mensaje directo con monto y forma de pago.</li>' +
+          '<li><b>+3 días:</b> llamada o mensaje pidiendo nueva fecha concreta.</li>' +
+          '<li><b>+7 días:</b> propón abonos semanales y escríbelos en la app.</li>' +
+          '<li><b>+15 días:</b> no vuelvas a dar crédito hasta que liquide. Sé cordial, pero firme.</li>' +
+        '</ul></div>' +
+        '<div class="cap-card"><h3>Reglas para cuidar tu negocio y a tu clienta</h3><ul>' +
+          '<li>Cobra en privado. Nunca exhibas a nadie en grupos ni redes sociales.</li>' +
+          '<li>Sin amenazas ni groserías, y en horario razonable (no de noche ni domingos temprano).</li>' +
+          '<li>Pon un <b>límite de crédito</b> por persona; súbelo solo a quien paga puntual.</li>' +
+          '<li>Agradece cada abono: “¡Gracias, Lupita! Ya nada más quedan $130”. Lo que se reconoce se repite.</li>' +
+        '</ul><div class="cap-no">❌ Evita: “Oye, ¿y mi dinero?”. Suena a reclamo y la gente se esconde.</div></div>',
+      quiz: [
+        { p: "Al vender a crédito, ¿qué es lo más importante?", o: ["Confiar en que pagará", "Acordar monto, fecha exacta y forma de pago", "No hablar de dinero para no incomodar"], c: 1, x: "Una fecha concreta convierte un favor en un compromiso." },
+        { p: "Una clienta lleva 15 días sin pagar. ¿Qué haces?", o: ["Publicar su deuda en el grupo", "Pausar su crédito y proponer abonos, con cordialidad", "Olvidarte del dinero"], c: 1, x: "Firme con la deuda, amable con la persona. Y nunca exhibir." }
+      ]
+    },
+    {
+      id: "objcobro", e: "🧾", t: "Objeciones al cobrar", d: "Qué decir cuando ponen pretextos · 6 min",
+      html:
+        '<div class="cap-card"><h3>La clave: siempre sal con una fecha</h3><p>Cada pretexto se contesta igual: <b>empatía + fecha concreta + monto</b>. Si terminas la plática sin fecha nueva, la deuda se alarga. Anota el acuerdo en la app (✏️ editar venta → recordatorio).</p></div>' +
+        '<div class="cap-obj"><div class="q">😩 “Ahorita no tengo.”</div><div class="r">Te entiendo, a todos nos pasa. ¿Qué te parece si me das $50 hoy y el resto el viernes?</div><div class="tip">Un abono pequeño hoy mantiene vivo el compromiso.</div></div>' +
+        '<div class="cap-obj"><div class="q">📅 “La próxima semana te pago.”</div><div class="r">Perfecto. ¿Qué día exactamente, el lunes o el miércoles? Para agendarlo y no molestarte antes.</div><div class="tip">“La próxima semana” no es una fecha. Pide el día.</div></div>' +
+        '<div class="cap-obj"><div class="q">🤨 “Yo ya te pagué.”</div><div class="r">Ay, ¡qué pena! Déjame revisar. Aquí tengo registrado un abono de $50 el día 3. ¿Me ayudas a ver si hubo otro pago para corregirlo?</div><div class="tip">Abre la venta en la app y muestra el historial con calma. Nunca acuses.</div></div>' +
+        '<div class="cap-obj"><div class="q">💔 “El producto salió malo.”</div><div class="r">Gracias por decirme, eso no debió pasar. Te lo cambio, y lo que queda pendiente me lo pagas cuando lo tengas, ¿te parece el viernes?</div><div class="tip">Resuelve el problema primero; luego retoma el cobro.</div></div>' +
+        '<div class="cap-obj"><div class="q">✂️ “Te pago la mitad y ya.”</div><div class="r">Te agradezco el abono, me ayuda mucho. Lo anoto y quedan $130. ¿Los dejamos para el día 20?</div><div class="tip">Acepta el abono, pero no perdones el resto sin decidirlo tú.</div></div>' +
+        '<div class="cap-obj"><div class="q">🔇 No contesta los mensajes.</div><div class="r">Hola Sofía, solo quiero saber que estás bien 🙂. Cuando puedas, dime qué día te queda bien para lo pendiente.</div><div class="tip">Cambia de canal (llamada, en persona) y baja la presión. El silencio suele ser pena.</div></div>' +
+        '<div class="cap-obj"><div class="q">🙏 “Es que a mí también me quedaron mal.”</div><div class="r">Uf, sé lo que se siente. Por eso mismo te pido que lo veamos: ¿podemos hacerlo en dos pagos de $65?</div><div class="tip">Usa la empatía como puente para el acuerdo.</div></div>',
+      quiz: [
+        { p: "Te dicen “la próxima semana te pago”. ¿Qué respondes?", o: ["“Va, sin prisa”", "“¿Qué día exactamente, el lunes o el miércoles?”", "“Siempre dices lo mismo”"], c: 1, x: "Convertir “la próxima semana” en un día concreto es lo que hace que paguen." },
+        { p: "La clienta dice que ya te pagó. ¿Qué haces?", o: ["Decirle que miente", "Revisar el historial en la app y mostrarlo con calma", "Dejarlo así para no pelear"], c: 1, x: "Tus registros en la app son tu mejor aliado: hablan por ti, sin pleito." }
+      ]
+    },
+    {
+      id: "mensajes", e: "💬", t: "Mensajes listos", d: "Cópialos o úsalos como tu plantilla · 2 min",
+      msgs: [
+        { c: "Recordatorio amable (antes de la fecha)", x: "Hola {cliente} 👋, ¿cómo estás? Solo para recordarte que mañana quedamos de ver lo pendiente de {debe} por {producto}. ¡Gracias por tu confianza! 🙏", p: true },
+        { c: "El día del pago", x: "Hola {cliente} 😊, hoy es el día que acordamos para los {debe} de {producto}. Puedes pagarme en efectivo o por transferencia, como te quede mejor. ¡Gracias!", p: true },
+        { c: "Pago atrasado (firme y cordial)", x: "Hola {cliente}, te escribo por los {debe} pendientes de {producto} desde el {fecha}. Entiendo si se complicó; ¿qué día de esta semana podemos dejarlo? Si te ayuda, lo hacemos en abonos.", p: true },
+        { c: "Agradecer un abono", x: "¡Muchas gracias por tu abono, {cliente}! 🙌 Ya lo anoté. Quedan {debe} pendientes. ¡Que tengas bonito día!", p: true },
+        { c: "Seguimiento de una venta (“lo voy a pensar”)", x: "Hola 😊, ¿pudiste pensar en el esmalte que te enseñé? Todavía te lo tengo apartado hasta mañana. ¿Te lo llevo?", p: false },
+        { c: "Ofrecer novedad a clienta frecuente", x: "Hola, ¡me llegaron tonos nuevos y me acordé de ti! 💅 Te mando fotos. Para mis clientas frecuentes tengo combo con lima de regalo esta semana.", p: false }
+      ]
+    }
+  ];
+
+  var prog = {};
+  try { prog = JSON.parse(localStorage.getItem(GUARDA) || "{}"); } catch (e) {}
+  var guardar = function () { try { localStorage.setItem(GUARDA, JSON.stringify(prog)); } catch (e) {} };
+  var g = function (id) { return document.getElementById(id); };
+  var actual = null;
+
+  function aviso(m) { if (typeof toast === "function") toast(m); }
+
+  function inicio() {
+    actual = null;
+    var hechos = MODULOS.filter(function (m) { return prog[m.id]; }).length;
+    g("capTit").textContent = "🎓 Capacitación";
+    g("capAtras").style.visibility = "hidden";
+    g("capIn").innerHTML =
+      '<div class="cap-hero"><h2>Vende más y cobra sin pena</h2><p>Lecciones cortas con frases listas para usar con tus clientas. Incluido en tu suscripción.</p>' +
+      '<div class="cap-barra"><i style="width:' + Math.round(hechos / MODULOS.length * 100) + '%"></i></div><small>' + hechos + ' de ' + MODULOS.length + ' lecciones completadas' + (hechos === MODULOS.length ? ' · ¡Felicidades! 🏆' : '') + '</small></div>' +
+      MODULOS.map(function (m, i) {
+        return '<button class="cap-mod" data-i="' + i + '"><span class="e">' + m.e + '</span><span class="t"><b>' + (i + 1) + '. ' + m.t + '</b><span>' + m.d + '</span></span><span class="ok">' + (prog[m.id] ? "✅" : "›") + '</span></button>';
+      }).join("");
+    g("capOv").scrollTop = 0;
+  }
+
+  function leccion(i) {
+    var m = MODULOS[i]; actual = i;
+    g("capTit").textContent = m.e + " " + m.t;
+    g("capAtras").style.visibility = "visible";
+    var cuerpo = m.html || "";
+    if (m.msgs) {
+      cuerpo = '<div class="cap-card"><p>Las palabras entre llaves, como <b>{cliente}</b> o <b>{debe}</b>, la app las llena sola al enviar el recordatorio. Toca <b>“Usar como mi plantilla”</b> para que tus recordatorios de cobro salgan con ese mensaje.</p></div>' +
+        m.msgs.map(function (x, k) {
+          return '<div class="cap-msg"><div class="c">' + x.c + '</div><div class="x">' + x.x.replace(/</g, "&lt;") + '</div><div class="bs"><button data-copiar="' + k + '">📋 Copiar</button>' + (x.p ? '<button data-plantilla="' + k + '">⭐ Usar como mi plantilla de cobro</button>' : '') + '</div></div>';
+        }).join("");
+    }
+    if (m.quiz) {
+      cuerpo += '<div class="cap-quiz"><h3>✍️ Practica</h3>' + m.quiz.map(function (q, k) {
+        return '<div class="cap-p" data-q="' + k + '"><b>' + q.p + '</b>' + q.o.map(function (o, j) { return '<button class="cap-op" data-j="' + j + '">' + o + '</button>'; }).join("") + '<div class="cap-fb"></div></div>';
+      }).join("") + '</div>';
+    } else {
+      prog[m.id] = true; guardar();
+    }
+    cuerpo += i < MODULOS.length - 1 ? '<button class="cap-sig" data-i="' + (i + 1) + '">Siguiente: ' + MODULOS[i + 1].t + ' →</button>' : '<button class="cap-sig" data-volver="1">Volver al inicio</button>';
+    g("capIn").innerHTML = cuerpo;
+    g("capOv").scrollTop = 0;
+  }
+
+  function responder(btn) {
+    var caja = btn.closest(".cap-p"), m = MODULOS[actual], q = m.quiz[+caja.dataset.q], j = +btn.dataset.j;
+    if (caja.dataset.listo) return;
+    caja.dataset.listo = 1;
+    caja.querySelectorAll(".cap-op").forEach(function (b, k) { if (k === q.c) b.classList.add("bien"); else if (k === j) b.classList.add("mal"); });
+    caja.querySelector(".cap-fb").innerHTML = (j === q.c ? "✅ <b>¡Bien!</b> " : "💡 <b>Casi.</b> ") + q.x;
+    var todas = g("capIn").querySelectorAll(".cap-p").length, listas = g("capIn").querySelectorAll(".cap-p[data-listo]").length;
+    if (listas === todas && !prog[m.id]) { prog[m.id] = true; guardar(); aviso("Lección completada ✅"); }
+  }
+
+  async function usarPlantilla(texto) {
+    var campo = document.getElementById("tCobro");
+    if (!campo || typeof guardarPlantillas !== "function") return aviso("No se pudo guardar la plantilla");
+    campo.value = texto;
+    await guardarPlantillas();
+    aviso("Listo ⭐ Tus recordatorios de cobro usarán este mensaje");
+  }
+
+  g("capIn").addEventListener("click", function (e) {
+    var b = e.target.closest("button"); if (!b) return;
+    if (b.classList.contains("cap-op")) return responder(b);
+    if (b.dataset.volver) return inicio();
+    if (b.dataset.i !== undefined) return leccion(+b.dataset.i);
+    var m = MODULOS[actual];
+    if (b.dataset.copiar !== undefined) {
+      var t = m.msgs[+b.dataset.copiar].x;
+      (navigator.clipboard ? navigator.clipboard.writeText(t) : Promise.reject()).then(function () { aviso("Mensaje copiado 📋"); }, function () { aviso("No se pudo copiar"); });
+    }
+    if (b.dataset.plantilla !== undefined) usarPlantilla(m.msgs[+b.dataset.plantilla].x);
+  });
+  g("capAtras").onclick = inicio;
+  g("capCerrar").onclick = function () { g("capOv").classList.remove("ver"); document.body.style.overflow = ""; };
+
+  window.abrirCapacitacion = function (i) {
+    g("capOv").classList.add("ver"); document.body.style.overflow = "hidden";
+    if (typeof i === "number") leccion(i); else inicio();
+  };
+
+  // Botón en el encabezado de la app
+  var h = document.querySelector("header.top");
+  if (h) {
+    var b = document.createElement("button");
+    b.className = "cap-btn"; b.type = "button"; b.textContent = "🎓 Aprende";
+    b.onclick = function () { window.abrirCapacitacion(); };
+    h.appendChild(b);
+  }
+  // Acceso directo en la pestaña de Avisos, donde se cobra
+  var av = document.getElementById("tab-avisos");
+  if (av) {
+    var a = document.createElement("button");
+    a.className = "cap-aviso"; a.type = "button";
+    a.innerHTML = '<span class="e">🧾</span><span><b>¿Te ponen pretextos para pagar?</b><span>Mira qué contestar en “Objeciones al cobrar”</span></span>';
+    a.onclick = function () { window.abrirCapacitacion(3); };
+    var h2 = av.querySelector("h2");
+    if (h2 && h2.nextElementSibling) h2.nextElementSibling.insertAdjacentElement("afterend", a); else av.prepend(a);
+  }
+})();
+</script>

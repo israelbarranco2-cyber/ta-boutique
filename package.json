@@ -7,6 +7,6 @@
     "llaves": "node crear-llaves.mjs",
     "preparar": "node preparar.mjs",
     "generador": "node generador.mjs",
-    "probar": "node preparar.mjs && npx --yes serve docs -p 8081"
+    "probar": "node preparar.mjs && npx --yes serve docs -p 8081 --no-clean-urls"
   }
 }
