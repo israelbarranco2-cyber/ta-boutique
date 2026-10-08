@@ -6,8 +6,8 @@
 <meta name="theme-color" content="#156082">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="Mi Tienda">
-<title>Mi Tienda</title>
+<meta name="apple-mobile-web-app-title" content="Ta Boutique">
+<title>Ta Boutique</title>
 <link rel="icon" href="icon.svg">
 <link rel="apple-touch-icon" href="icon-192.png">
 <link rel="manifest" href="manifest.json">
@@ -34,13 +34,13 @@ textarea:focus{outline:none;border-color:var(--pet)}
 </style>
 </head>
 <body>
-<header><img src="icon.svg" alt=""><b>Mi Tienda</b></header>
+<header><img src="icon.svg" alt=""><b>Ta Boutique</b></header>
 <main>
   <div id="cargando" class="cargando">Abriendo…</div>
 
   <div id="pantalla" class="card oculto">
     <h1 id="titulo">Activa tu app</h1>
-    <p id="mensaje">Para usar Mi Tienda necesitas un código de activación. Si ya lo compraste, ábrelo desde el enlace que te mandaron o pégalo aquí.</p>
+    <p id="mensaje">Para usar Ta Boutique necesitas un código de activación. Si ya lo compraste, ábrelo desde el enlace que te mandaron o pégalo aquí.</p>
     <textarea id="codigo" placeholder="Pega aquí tu código de activación" autocomplete="off" spellcheck="false"></textarea>
     <button class="btn" id="activar">Activar</button>
     <div id="error" class="error oculto"></div>
@@ -112,7 +112,7 @@ textarea:focus{outline:none;border-color:var(--pet)}
     $("error").classList.toggle("oculto", !error);
     if (L.contactoWA) {
       var a = $("contacto");
-      a.href = "https://wa.me/" + L.contactoWA.replace(/\D/g, "") + "?text=" + encodeURIComponent("Hola, quiero comprar o renovar mi código de " + (L.nombre || "Mi Tienda") + ".");
+      a.href = "https://wa.me/" + L.contactoWA.replace(/\D/g, "") + "?text=" + encodeURIComponent("Hola, quiero comprar o renovar mi código de " + (L.nombre || "Ta Boutique") + ".");
       a.classList.remove("oculto");
     }
   }

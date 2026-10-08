@@ -1,7 +1,7 @@
 {
   "id": "./",
-  "name": "Mi Tienda",
-  "short_name": "Mi Tienda",
+  "name": "Ta Boutique",
+  "short_name": "Ta Boutique",
   "description": "Control de compras, ventas, cobros y devoluciones",
   "start_url": "./",
   "scope": "./",

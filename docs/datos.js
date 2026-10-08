@@ -1,1 +1,1 @@
-window.VENTA = {"contactoWA":"","precio":"","nombre":"Mi Tienda"};
+window.VENTA = {"contactoWA":"","precio":"","nombre":"Ta Boutique"};

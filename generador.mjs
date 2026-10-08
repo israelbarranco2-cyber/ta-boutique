@@ -23,7 +23,7 @@ function emitir(c) {
   const config = leerConfig();
   const codigo = firmarCodigo(secretos, { i: c.id, n: c.cliente, v: c.vence, k: secretos.aes });
   const enlace = config.url + "#activar=" + codigo;
-  const mensaje = `Hola ${c.cliente} 👋, aquí está tu acceso a ${config.nombreVendedor || "Mi Tienda"}, válido hasta el ${c.vence.split("-").reverse().join("/")}.\n\nÁbrelo desde tu celular con Chrome:\n${enlace}\n\nLuego en el menú ⋮ elige "Instalar aplicación". ¡Gracias!`;
+  const mensaje = `Hola ${c.cliente} 👋, aquí está tu acceso a ${config.nombreVendedor || "Ta Boutique"}, válido hasta el ${c.vence.split("-").reverse().join("/")}.\n\nÁbrelo desde tu celular con Chrome:\n${enlace}\n\nLuego en el menú ⋮ elige "Instalar aplicación". ¡Gracias!`;
   return { ...c, codigo, enlace, mensaje };
 }
 

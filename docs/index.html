@@ -3,10 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Mi Tienda — Controla tu negocio desde el celular</title>
+<title>Ta Boutique — Controla tu negocio desde el celular</title>
 <meta name="description" content="App para tiendas y vendedoras: registra compras y ventas, sabe quién te debe y cóbrale por WhatsApp con un toque. Funciona sin internet.">
 <meta name="theme-color" content="#156082">
-<meta property="og:title" content="Mi Tienda — Controla tu negocio desde el celular">
+<meta property="og:title" content="Ta Boutique — Controla tu negocio desde el celular">
 <meta property="og:description" content="Compras, ventas, fiado y cobros por WhatsApp. Tus datos se quedan en tu celular.">
 <meta property="og:image" content="img/inicio.png">
 <meta property="og:locale" content="es_MX">
@@ -155,7 +155,7 @@ footer a{color:#fff}
 
 <header class="top">
   <div class="wrap">
-    <a class="marca" href="#"><img src="app/icon-192.png" alt="">Mi Tienda</a>
+    <a class="marca" href="#"><img src="app/icon-192.png" alt="">Ta Boutique</a>
     <a class="ya" href="app/">Ya tengo mi código</a>
   </div>
 </header>
@@ -172,7 +172,7 @@ footer a{color:#fff}
       </div>
       <p class="precio js-precio-hero"></p>
     </div>
-    <div class="telefono"><img src="img/inicio.png" alt="Ficha de producto en Mi Tienda" width="390" height="844"></div>
+    <div class="telefono"><img src="img/inicio.png" alt="Ficha de producto en Ta Boutique" width="390" height="844"></div>
   </div>
 </div>
 
@@ -327,7 +327,7 @@ footer a{color:#fff}
 </section>
 
 <footer>
-  <div class="wrap">¿Ya la compraste? <a href="app/">Abre tu app aquí</a> · © <span id="anio"></span> Mi Tienda</div>
+  <div class="wrap">¿Ya la compraste? <a href="app/">Abre tu app aquí</a> · © <span id="anio"></span> Ta Boutique</div>
 </footer>
 
 <div class="flotante" id="flotante"><a class="btn wa js-wa" href="#">💬 Quiero mi app</a></div>
@@ -338,7 +338,7 @@ footer a{color:#fff}
   var V = window.VENTA || {};
   var tel = (V.contactoWA || "").replace(/\D/g, "");
   if (tel.length === 10) tel = "52" + tel;
-  var msg = encodeURIComponent("Hola, vi la página de " + (V.nombre || "Mi Tienda") + " y quiero mi app 🙂");
+  var msg = encodeURIComponent("Hola, vi la página de " + (V.nombre || "Ta Boutique") + " y quiero mi app 🙂");
   document.querySelectorAll(".js-wa").forEach(function (a) {
     if (tel) { a.href = "https://wa.me/" + tel + "?text=" + msg; a.target = "_blank"; a.rel = "noopener"; }
     else if (a.getAttribute("href") === "#") a.href = "#precio";

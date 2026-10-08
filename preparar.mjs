@@ -15,7 +15,11 @@ const base = fs.readFileSync(new URL("index.html", ORIGEN), "utf8");
 const curso = fs.readFileSync(new URL("./capacitacion.html", import.meta.url), "utf8");
 const corte = base.lastIndexOf("</body>");
 if (corte < 0) throw new Error("No encontré </body> en la app");
-const html = base.slice(0, corte) + curso + "\n" + base.slice(corte);
+// El nombre comercial (config.nombreVendedor) reemplaza a "Mi Tienda" en todo lo que ve el cliente.
+const nombre = config.nombreVendedor || "Mi Tienda";
+const html = (base.slice(0, corte) + curso + "\n" + base.slice(corte))
+  .replace(", te saluda Mi Tienda. Te", ". Te")
+  .replaceAll("Mi Tienda", nombre);
 fs.writeFileSync(new URL("app.enc", DOCS), cifrarApp(secretos, html));
 
 for (const f of ["icon.svg", "icon-192.png", "icon-512.png", "icon-maskable-192.png", "icon-maskable-512.png"]) {
