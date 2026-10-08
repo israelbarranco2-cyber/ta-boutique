@@ -3,7 +3,7 @@ MI TIENDA — Versión para vender (GitHub Pages)
 
 Cómo funciona
 -------------
-- La app se publica gratis en GitHub Pages, pero va CIFRADA (docs/app.enc).
+- La app se publica gratis en GitHub Pages, pero va CIFRADA (docs/app/app.enc).
   Sin un código de activación válido no se puede abrir.
 - Tú cobras (transferencia, Mercado Pago, efectivo) y generas el código en tu laptop.
 - El código lleva el nombre del cliente y la fecha de vencimiento. Al vencer, la app
